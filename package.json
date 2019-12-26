@@ -7,8 +7,10 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
+  "main": "index.js",
   "dependencies": {
     "core-js": "^3.4.3",
+    "express": "^4.17.1",
     "vue": "^2.6.10",
     "vuetify": "^2.1.15"
   },
