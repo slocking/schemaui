@@ -38,8 +38,9 @@ class Inaff {
     }
 
     initRoutes () {
-        this.router.use(express.static(path.resolve(__dirname, '../dist')));
         this.router.use('/api', Api);
+        this.router.use(express.static(path.resolve(__dirname, '../dist')));
+        this.router.use('*', (req, res) => res.sendFile(path.resolve(__dirname, '../dist/index.html')));
     }
 }
 

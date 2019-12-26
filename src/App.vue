@@ -12,8 +12,12 @@
     <v-navigation-drawer v-model="drawer" app clipped color="grey lighten-4">
       <v-list rounded class="grey lighten-4">
         <v-subheader>COLLECTIONS</v-subheader>
-        <v-list-item-group v-model="selectedCollection">
-          <v-list-item link v-for="collection of collections" :key="collection.name">
+        <v-list-item-group active-class="active">
+          <v-list-item link
+                       v-for="collection of collections"
+                       :key="collection.name"
+                       :to="'/collection/' + collection.name"
+                       :class="{active: $route.params && collection.name === $route.params.collection}">
             <v-list-item-action>
               <v-icon>mdi-chevron-right</v-icon>
             </v-list-item-action>
@@ -28,20 +32,20 @@
     </v-navigation-drawer>
 
     <v-content>
-      <HelloWorld/>
+      <router-view />
     </v-content>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+// import HelloWorld from './components/HelloWorld';
 import { http } from './mixins/http';
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    // HelloWorld,
   },
   mixins: [
     http
@@ -54,7 +58,7 @@ export default {
   data: () => ({
     loaded: false,
     drawer: true,
-    selectedCollection: 0,
+    selectedCollection: 'Glossary',
     collections: []
   }),
 };
