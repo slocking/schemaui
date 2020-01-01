@@ -1,0 +1,409 @@
+<template>
+    <div>
+        <v-form @submit.prevent="saveDocument" ref="editForm">
+            <v-card class="fields-container" v-if="fields && Object.keys(fields).length">
+                <v-row v-if="!newItem">
+                    <v-col class="d-flex justify-end id-label grey--text text--accent-4">
+                        ID: {{ item._id }}
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col sm="10" md="8" lg="6">
+                        <template v-if="fields[fieldTypes.String]">
+                            <div v-for="field of fields[fieldTypes.String]" :key="field.key">
+                                <v-text-field
+                                        v-if="!field.multi"
+                                        v-model="item[field.key]"
+                                        :placeholder="_.startCase(field.key)"
+                                        :outlined="true"
+                                        :rules="requiredField(field.required, field.key)"
+                                        :required="field.required"
+                                        :label="_.startCase(field.key)"
+                                />
+                                <v-combobox
+                                        v-if="field.multi"
+                                        v-model="item[field.key]"
+                                        :placeholder="_.startCase(field.key)"
+                                        :outlined="true"
+                                        :rules="requiredFieldArray(field.required, field.key)"
+                                        :required="field.required"
+                                        :label="_.startCase(field.key)"
+                                        multiple
+                                        chips
+                                />
+                            </div>
+                        </template>
+                        <template v-if="fields[fieldTypes.Number]">
+                            <div v-for="field of fields[fieldTypes.Number]" :key="field.key">
+                                <v-text-field
+                                        v-if="!field.multi"
+                                        v-model="item[field.key]"
+                                        :placeholder="_.startCase(field.key)"
+                                        :outlined="true"
+                                        :rules="requiredFieldArray(field.required, field.key)"
+                                        :required="field.required"
+                                        :label="_.startCase(field.key)"
+                                        type="number"
+                                />
+                                <v-combobox
+                                        v-if="field.multi"
+                                        v-model="item[field.key]"
+                                        :placeholder="_.startCase(field.key)"
+                                        :outlined="true"
+                                        :rules="requiredObjectIdArray(field.required, field.key)"
+                                        :required="field.required"
+                                        :label="_.startCase(field.key)"
+                                        multiple
+                                        chips
+                                />
+                            </div>
+                        </template>
+                        <template v-if="fields[fieldTypes.ObjectId]">
+                            <div v-for="field of fields[fieldTypes.ObjectId]" :key="field.key">
+                                <v-text-field
+                                        v-if="'_id' !== field.key && !field.multi"
+                                        v-model="item[field.key]"
+                                        :placeholder="_.startCase(field.key)"
+                                        :outlined="true"
+                                        :rules="requiredObjectId(field.required, field.key)"
+                                        :required="field.required"
+                                        :label="_.startCase(field.key)"
+                                />
+                                <v-combobox
+                                        v-if="'_id' !== field.key && field.multi"
+                                        v-model="item[field.key]"
+                                        :placeholder="_.startCase(field.key)"
+                                        :outlined="true"
+                                        :rules="requiredObjectIdArray(field.required, field.key)"
+                                        :required="field.required"
+                                        :label="_.startCase(field.key)"
+                                        multiple
+                                        chips
+                                />
+                            </div>
+                        </template>
+                        <template v-if="fields[fieldTypes.Date]">
+                            <v-text-field
+                                    v-for="(field, index) of fields[fieldTypes.Date]"
+                                    v-model="item[field.key]"
+                                    :key="field.key"
+                                    :outlined="true"
+                                    :rules="requiredField(field.required, field.key)"
+                                    :required="field.required"
+                                    :label="_.startCase(field.key)"
+                                    @click="openDateModal(field.key, index)"
+                                    @focus="openDateModal(field.key, index)"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                            />
+                            <v-dialog
+                                    ref="dateModal"
+                                    v-model="dateModal.open"
+                                    persistent
+                                    width="290px">
+                                <v-date-picker v-if="1 === dateModal.step" v-model="dateModal.date" scrollable>
+                                    <v-spacer />
+                                    <v-btn text color="primary" @click="dateModal.open = false">Cancel</v-btn>
+                                    <v-btn text color="primary" :disabled="!dateModal.date" @click="dateModal.step = 2">Next</v-btn>
+                                </v-date-picker>
+                                <v-time-picker v-if="2 === dateModal.step" format="24hr" v-model="dateModal.time" full-width>
+                                    <v-spacer />
+                                    <v-btn text color="primary" @click="dateModal.step = 1">Back</v-btn>
+                                    <v-btn text color="primary" :disabled="!dateModal.time" @click="saveDateModal()">OK</v-btn>
+                                </v-time-picker>
+                            </v-dialog>
+                        </template>
+                        <template v-if="fields[fieldTypes.Boolean]">
+                            <v-switch
+                                    v-for="field of fields[fieldTypes.Boolean]"
+                                    v-model="item[field.key]"
+                                    :key="field.key"
+                                    :placeholder="_.startCase(field.key)"
+                                    :outlined="true"
+                                    :rules="requiredBoolean(field.required, field.key)"
+                                    :required="field.required"
+                                    :label="_.startCase(field.key)"
+                            />
+                        </template>
+                    </v-col>
+                </v-row>
+                <v-card-actions>
+                    <v-spacer />
+                    <v-btn v-if="newItem" raised color="primary" :loading="loading" :disabled="loading" type="submit">Create new Document</v-btn>
+                    <template v-if="!newItem">
+                        <v-btn text color="#f00" :disabled="loading" type="button" @click="openDeleteConfirm = true">Delete</v-btn>
+                        <v-btn raised color="primary" :loading="loading" :disabled="loading" type="submit">Save Changes</v-btn>
+                    </template>
+                </v-card-actions>
+                <v-dialog
+                        ref="openDeleteConfirm"
+                        v-model="openDeleteConfirm"
+                        width="290px">
+                    <v-card>
+                        <v-card-title>Are you sure?</v-card-title>
+                        <v-card-text>
+                            You're about to delete this document, proceed with this action?
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer />
+                            <v-btn text color="primary" type="button" :disabled="loading" @click="deleteItem()">Sure, DO IT!</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <v-dialog v-model="errorPopup.open" width="290px">
+                    <v-card>
+                        <v-card-title class="red--text text--darken-4">
+                            <v-icon color="#B71C1C" style="margin-right: 5px;">mdi-alert-circle-outline</v-icon>
+                            Oops...
+                        </v-card-title>
+                        <v-card-text>
+                            {{ errorPopup.message }}
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer />
+                            <v-btn text color="primary" type="button" @click="errorPopup.open = false">Got it</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </v-card>
+            <v-progress-circular
+                v-if="false === loaded"
+                :size="50"
+                color="primary"
+                indeterminate
+            />
+        </v-form>
+    </div>
+</template>
+
+<script>
+    /* eslint-disable */
+    import { FieldTypes } from './../../lib/enums';
+    import { http } from '../mixins/http';
+    import _ from 'lodash';
+    import { formats } from '../../lib/enums';
+    import moment from 'moment';
+
+    export default {
+        mixins: [
+            http
+        ],
+        props: [
+            'allowedFields',
+            'document',
+            'newItem'
+        ],
+        data () {
+            return {
+                fieldTypes: FieldTypes,
+                loaded: false,
+                loading: false,
+                openDeleteConfirm: false,
+                errorPopup: {
+                    open: false
+                },
+                fields: {},
+                item: {},
+                dateModal: {},
+            }
+        },
+        async mounted () {
+            this.init();
+        },
+        computed: {
+            _ () {
+                return _;
+            }
+        },
+        methods: {
+            requiredField (isRequired, fieldName) {
+                if (isRequired) {
+                    return [
+                        v => !!v || 'Missing ' + _.startCase(fieldName),
+                        v => Boolean('string' === typeof v && v.trim().length) || 'Invalid ' + _.startCase(fieldName),
+                    ]
+                }
+
+                return [];
+            },
+            requiredBoolean (isRequired, fieldName) {
+                if (isRequired) {
+                    return [
+                        v => 'boolean' === typeof v || 'Missing ' + _.startCase(fieldName),
+                    ]
+                }
+
+                return [];
+            },
+            requiredFieldArray (isRequired, fieldName) {
+                if (isRequired) {
+                    return [
+                        v => (Array.isArray(v) && Boolean(v.length)) || 'Missing ' + _.startCase(fieldName),
+                        v => (Array.isArray(v) && 0 === v.filter(val => 0 === val.trim().length).length) || 'Invalid ' + _.startCase(fieldName),
+                    ]
+                }
+
+                return [];
+            },
+            requiredObjectId (isRequired, fieldName) {
+                if (isRequired) {
+                    return [
+                        v => !!v || 'Missing ' + _.startCase(fieldName),
+                        v => Boolean('string' === typeof v && /^[a-z0-9]{24}$/.test(v)) || 'Invalid ' + _.startCase(fieldName),
+                    ]
+                }
+
+                return [];
+            },
+            requiredObjectIdArray (isRequired, fieldName) {
+                if (isRequired) {
+                    return [
+                        v => (Array.isArray(v) && Boolean(v.length)) || 'Missing ' + _.startCase(fieldName),
+                        v => (Array.isArray(v) && 0 === v.filter(val => false === /^[a-z0-9]{24}$/.test(val)).length) || 'Invalid ' + _.startCase(fieldName),
+                    ]
+                }
+
+                return [];
+            },
+            parseModelFromDb (item) {
+                const fieldKeys = Object.keys(this.allowedFields);
+
+                for (const key of fieldKeys) {
+                    const field = this.allowedFields[key];
+                    if (FieldTypes.Date === field.type && item[key] && item[key].length) {
+                        item[key] = moment(item[key]).format(formats.uiDate);
+                    }
+                }
+
+                return item;
+            },
+            formatModelToDb (item) {
+                const fieldKeys = Object.keys(this.allowedFields);
+
+                for (const key of fieldKeys) {
+                    const field = this.allowedFields[key];
+                    if (FieldTypes.Date === field.type && item[key] && item[key].length) {
+                        item[key] = moment(item[key], formats.uiDate).toISOString();
+                    }
+                }
+
+                return item;
+            },
+            async init () {
+                if (this.newItem) {
+                    this.item = {};
+                } else {
+                    const item = await this.get(
+                        `collections/${this.$route.params.collection}/${this.document._id}`
+                    );
+                    this.item = this.parseModelFromDb(item);
+                }
+                this.fields = _.groupBy(this.allowedFields, 'type');
+                this.loaded = true;
+            },
+            saveDateModal () {
+                this.item[this.dateModal.key] = `${this.dateModal.date} ${this.dateModal.time}`;
+                this.dateModal = {};
+            },
+            openDateModal (fieldKey) {
+                this.dateModal = {
+                    key: fieldKey,
+                    step: 1,
+                    open: true,
+                };
+
+                if (this.item[fieldKey] && this.item[fieldKey].length) {
+                    const dateObj = moment(this.item[fieldKey], formats.uiDate);
+
+                    this.dateModal.date = dateObj.format(formats.dateFormat);
+                    this.dateModal.time = dateObj.format(formats.timeFormat);
+                }
+            },
+            async saveDocument () {
+                const formValid = this.$refs.editForm.validate();
+
+                if (!formValid) {
+                    return;
+                }
+
+                if (true === this.loading) {
+                    return;
+                }
+
+                this.loading = true;
+
+                try {
+                    const itemClone = _.cloneDeep(this.item); // make sure the DOM item isn't affected by reference
+                    const formattedItem = this.formatModelToDb(itemClone);
+
+                    const savedItem = await this.post(`collections/${this.$route.params.collection}/save`, formattedItem);
+
+                    if (this.newItem) {
+                        this.$emit('documentUpdate', { _id: savedItem._id });
+                    } else {
+                        this.$emit('documentUpdate', itemClone);
+                    }
+                } catch (error) {
+                    this.errorPopup.message = error.message;
+                    this.errorPopup.open = true;
+                }
+
+                this.loading = false;
+            },
+            async deleteItem () {
+                if (true === this.loading) {
+                    return;
+                }
+
+                this.loading = true;
+
+                try {
+                    await this.delete(`collections/${this.$route.params.collection}/${this.document._id}`);
+
+                    this.openDeleteConfirm = false;
+                } catch (error) {
+                    this.errorPopup.message = error.message;
+                    this.errorPopup.open = true;
+                }
+                this.loading = false;
+
+            }
+        },
+        watch: {
+            document () {
+                this.loaded = false;
+                this.fields = {};
+                this.item = {};
+                this.init();
+            },
+        }
+    }
+</script>
+
+<style scoped lang="scss">
+    .popup-hosting .fields-container {
+        margin: 0;
+    }
+
+    form {
+        display: flex;
+        min-height: 250px;
+
+        > * {
+            flex: 1;
+        }
+
+        .v-progress-circular {
+            align-self: center;
+        }
+    }
+    .fields-container {
+        margin: 26px 10px;
+        padding: 20px;
+    }
+
+    .id-label {
+        padding-right: 25px;
+        font-family: monospace;
+    }
+</style>

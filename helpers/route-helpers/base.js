@@ -1,4 +1,3 @@
-/* eslint-disable */
 class BaseRoute {
     constructor () {
         return new Proxy(this, this);

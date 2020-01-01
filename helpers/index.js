@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const Api = require('../routes/api');
+const Errors = require('../lib/errors');
 const MongooseAdapter = require('../adapters/mongoose');
 
 class Inaff {
@@ -14,15 +15,22 @@ class Inaff {
         return new (this.options.adapter || MongooseAdapter)();
     }
 
-    registerModel (newModel) {
+    registerModel (newModel, options = {}) {
         const model = this.adapter.parseNewModel(newModel);
+        model.options = options;
         model.index = (this.models.push(newModel)) - 1;
 
         this.routesMap[model.name] = model;
     }
 
     getModel (modelName) {
-        return this.models[this.routesMap[modelName].index];
+        const existingModel = this.routesMap[modelName];
+
+        if (!existingModel) {
+            throw new Error(Errors.generalErrors.collectionNotFound);
+        }
+
+        return this.models[existingModel.index];
     }
 
     init (options = {}) {

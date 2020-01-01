@@ -42,7 +42,8 @@ class MongooseAdapter {
                 fields[key] = {
                     key,
                     multi,
-                    type: fieldType
+                    type: fieldType,
+                    required: tree[key].required || false
                 };
             }
         }

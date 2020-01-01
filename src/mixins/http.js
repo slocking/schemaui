@@ -1,4 +1,4 @@
-const BASE_URL = '/inaff/api/';
+const BASE_URL = 'http://localhost:1338/inaff/api/';
 
 function handleResponse (res) {
     if (true === res.success) {
@@ -23,6 +23,13 @@ export const http = {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
+        }).then(res => res.json()).then(res => handleResponse(res)),
+
+        delete: (url) => fetch(BASE_URL + url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
         }).then(res => res.json()).then(res => handleResponse(res)),
     }
 };
