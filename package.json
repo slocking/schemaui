@@ -25,7 +25,10 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "test:spec": "mocha --no-timeouts --exit 'test/**/*.spec.js'",
+    "test:coverage": "nyc --reporter=lcov npm run test:spec",
+    "test:codecov": "codecov"
   },
   "main": "index.js",
   "dependencies": {
@@ -43,8 +46,14 @@
     "@vue/cli-plugin-eslint": "^4.1.0",
     "@vue/cli-service": "^4.1.0",
     "babel-eslint": "^10.0.3",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "codecov": "^3.6.1",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "mocha": "^7.0.0",
+    "mongoose": "^5.8.7",
+    "nyc": "^15.0.0",
     "sass": "^1.19.0",
     "sass-loader": "^8.0.0",
     "vue-cli-plugin-vuetify": "^2.0.2",
