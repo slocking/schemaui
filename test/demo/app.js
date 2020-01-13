@@ -23,7 +23,9 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
         process.exit(0);
     });
 
-SchemaUI.registerModel(User);
+SchemaUI.registerModel(User, {
+    listFields: ['email', 'firstName']
+});
 
 const app = express();
 
