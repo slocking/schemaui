@@ -2,6 +2,7 @@
 
 [![NPM version](https://img.shields.io/npm/v/schemaui.svg)](https://npmjs.org/package/codecov)
 [![Build Status](https://travis-ci.com/molaga/schemaui.svg?branch=master)](https://travis-ci.com/molaga/schemaui)
+[![codecov.io](http://codecov.io/github/molaga/schemaui/coverage.svg?branch=master)](http://codecov.io/github/molaga/schemaui?branch=master)
 
 Turn every mongoose schema, into a shiny, slick, good looking UI, that will help you manage fully CRUD operations to your registered models.
 
