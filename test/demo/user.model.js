@@ -1,5 +1,8 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const _           = require('lodash');
+const mongoose    = require('mongoose');
+const { Schema }  = mongoose;
+const randStr     = () => String(_.random(1000, 9999));
+
 
 const userSchema = new Schema({
   email: {
@@ -16,6 +19,22 @@ const userSchema = new Schema({
 }, {
   collection: 'users'
 });
+
+userSchema.statics.newUser = function () {
+  return new this({
+    email: `user_${randStr()}@example.com`,
+    firstName: 'first_' + randStr(),
+    lastName: 'last_' + randStr(),
+    isActive: (1 === _.random(0,1)),
+    hobbies: [
+        'hobbie_' + randStr(),
+        'hobbie_' + randStr(),
+        'hobbie_' + randStr(),
+        'hobbie_' + randStr(),
+        'hobbie_' + randStr()
+    ]
+  })
+};
 
 const User = mongoose.model('Users', userSchema);
 
