@@ -1,1 +1,7 @@
 language: node_js
+node_js: 12
+jobs:
+  include:
+    - stage: "Build"
+      name: "Build Client"
+      script: npm run build --prod
