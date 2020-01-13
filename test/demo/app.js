@@ -1,28 +1,35 @@
+/* eslint-disable no-console */
+
 const express = require('express');
 const mongoose = require('mongoose');
 const http = require('http');
-const Inaff = require('../../index');
-const Form = require('./form.model');
+const SchemaUI = require('../../index');
+const User = require('./user.model');
 
 const port = 4000;
-Inaff.init();
+SchemaUI.init();
+
+if (!process.env.MONGODB_URI) {
+    console.log('It\'s dangerous to run this test without specifying MONGODB_URI...');
+    process.exit(0);
+}
 
 mongoose.Promise = global.Promise;
 mongoose.set('useCreateIndex', true);
-mongoose.connect('mongodb://127.0.0.1:27017/bodkim', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('DB Connected!'))
     .catch((e) => {
         console.log(`MongoDB connection failed - ${e.message}`);
         process.exit(0);
     });
 
-Inaff.registerModel(Form);
+SchemaUI.registerModel(User);
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use('/inaff', Inaff.middleware());
+app.use('/schemaui', SchemaUI.middleware());
 
 const server = http.createServer(app);
 

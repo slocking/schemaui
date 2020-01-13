@@ -1,7 +1,14 @@
 language: node_js
 node_js: 12
+env:
+  - MONGODB_URI=mongodb://localhost:27017/test
+services:
+  - mongodb
 jobs:
   include:
     - stage: "Build"
       name: "Build Client"
       script: npm run build --prod
+    - stage: "Test"
+      name: "API Test"
+      script: npm run test:spec
