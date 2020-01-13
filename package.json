@@ -25,15 +25,20 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "test:spec": "ENV=test mocha --no-timeouts --exit 'test/**/*.spec.js'"
   },
   "main": "index.js",
   "dependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "core-js": "^3.4.3",
     "escape-string-regexp": "^2.0.0",
     "express": "^4.17.1",
     "lodash": "^4.17.15",
+    "mocha": "^7.0.0",
     "moment": "^2.24.0",
+    "mongoose": "^5.8.7",
     "vue": "^2.6.10",
     "vue-router": "^3.1.3",
     "vuetify": "^2.1.15"
