@@ -27,7 +27,8 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:spec": "mocha --no-timeouts --exit 'test/**/*.spec.js'",
-    "test:coverage": "nyc npm run test:spec"
+    "test:coverage": "nyc --reporter=lcov npm run test:spec",
+    "test:codecov": "codecov"
   },
   "main": "index.js",
   "dependencies": {
