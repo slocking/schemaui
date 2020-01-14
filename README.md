@@ -46,7 +46,7 @@ Intuitive, responsive, generic CRM dashboard, that created to help you manage yo
 `options` (optional) - global options for SchemaUI instance (TBD)
 
 ### SchemaUI.registerModel(Model, [options])
-_* this method should be called multiple times, for every model that you wish to include in the admin UI _
+*this method should be called multiple times, for every model that you wish to include in the admin UI*
 
 `Model` - A single mongoose model you wish to include in the generated UI
 
@@ -59,7 +59,7 @@ _* this method should be called multiple times, for every model that you wish to
 ### SchemaUI.middleware()
 Initiates express router that injects the admin UI into your existing app.
 
-**Schema UI middleware must be under /schemaui route, any other route will not be able to load SchemaUI's admin panel**
+*Schema UI middleware must be under `/schemaui` route, any other route will not be able to load SchemaUI's admin panel*
 
 ## Demo
 Live demo & source code can be found [here](https://github.com/molaga/schemaui-demo)
