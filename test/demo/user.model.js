@@ -5,17 +5,22 @@ const randStr     = () => String(_.random(1000, 9999));
 
 
 const userSchema = new Schema({
-  email: {
-    type: String,
-    required: true
-  },
-  firstName: String,
-  lastName: String,
-  isActive: {
-    type: Boolean,
-    default: true
-  },
-  hobbies: [String]
+    email: {
+        type: String,
+        required: true
+    },
+    firstName: String,
+    lastName: String,
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    hobbies: [String],
+    dates: {
+        lastActive: {
+            type: Date
+        }
+    }
 }, {
   collection: 'users'
 });

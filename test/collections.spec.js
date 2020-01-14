@@ -20,6 +20,7 @@ const defaultFilters = {
 };
 
 let existingUser;
+let existingUser2;
 
 
 describe('SchemaUI App', () => {
@@ -83,6 +84,32 @@ describe('SchemaUI App', () => {
         existingUser = request.body.data;
     });
 
+    it('POST /api/collections/:collectionName/save - edit user fields', async () => {
+        const newFirstName  = 'custom_modified';
+        existingUser.firstName = newFirstName;
+
+        const request = await chai.request(app).post(BASE_PATH + '/api/collections/' + User.modelName + '/save')
+            .set('Content-Type', defaultHeaders['Content-Type'])
+            .send(existingUser);
+        expect(request).to.have.status(200);
+        expect(request.body).to.have.property('success').to.equal(true);
+        expect(request.body).to.have.property('data').to.have.property('firstName').to.equal(newFirstName);
+        existingUser = request.body.data;
+    });
+
+    it('POST /api/collections/:collectionName/save - add additional user', async () => {
+        const newUser2 = User.newUser().toObject();
+        delete newUser2._id;
+
+        const request = await chai.request(app).post(BASE_PATH + '/api/collections/' + User.modelName + '/save')
+            .set('Content-Type', defaultHeaders['Content-Type'])
+            .send(newUser2);
+        expect(request).to.have.status(200);
+        expect(request.body).to.have.property('success').to.equal(true);
+        expect(request.body).to.have.property('data').to.have.property('_id');
+        existingUser2 = request.body.data;
+    });
+
     it('POST /api/collections/:collectionName/save - should fail with non existing user', async () => {
         const newUser = User.newUser().toObject();
         const request = await chai.request(app).post(BASE_PATH + '/api/collections/' + User.modelName + '/save')
@@ -91,5 +118,35 @@ describe('SchemaUI App', () => {
         expect(request).to.have.status(200);
         expect(request.body).to.have.property('success').to.equal(false);
         expect(request.body).to.have.property('data').to.equal(Errors.generalErrors.documentNotFound);
+    });
+
+    it('POST /api/collections/:collectionName - test sorting functionality', async () => {
+        const request = await chai.request(app).post(BASE_PATH + '/api/collections/' + User.modelName)
+            .set('Content-Type', defaultHeaders['Content-Type'])
+            .send({ ...defaultFilters, sort: { '_id': -1 } });
+        expect(request).to.have.status(200);
+        expect(request.body).to.have.property('success').to.equal(true);
+        expect(request.body.data.items[0]).to.have.property('_id').to.be.equal(String(existingUser2._id));
+        expect(request.body.data.items[1]).to.have.property('_id').to.be.equal(String(existingUser._id));
+    });
+
+    it('POST /api/collections/:collectionName - search by user id', async () => {
+        const request = await chai.request(app).post(BASE_PATH + '/api/collections/' + User.modelName)
+            .set('Content-Type', defaultHeaders['Content-Type'])
+            .send({ ...defaultFilters, search: existingUser._id });
+        expect(request).to.have.status(200);
+        expect(request.body).to.have.property('success').to.equal(true);
+        expect(request.body).to.have.property('data').to.have.property('items').to.have.length(1);
+        expect(request.body.data.items[0]).to.have.property('_id').to.be.equal(String(existingUser._id));
+    });
+
+    it('POST /api/collections/:collectionName - search by user\'s field', async () => {
+        const request = await chai.request(app).post(BASE_PATH + '/api/collections/' + User.modelName)
+            .set('Content-Type', defaultHeaders['Content-Type'])
+            .send({ ...defaultFilters, search: existingUser.email });
+        expect(request).to.have.status(200);
+        expect(request.body).to.have.property('success').to.equal(true);
+        expect(request.body).to.have.property('data').to.have.property('items').to.have.length(1);
+        expect(request.body.data.items[0]).to.have.property('email').to.be.equal(existingUser.email);
     });
 });
