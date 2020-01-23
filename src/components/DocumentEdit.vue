@@ -10,79 +10,13 @@
                 <v-row>
                     <v-col sm="10" md="8" lg="6">
                         <template v-if="fields[fieldTypes.String]">
-                            <div v-for="field of fields[fieldTypes.String]" :key="field.key">
-                                <v-textarea
-                                        v-if="!field.multi"
-                                        v-model="item[field.key]"
-                                        :placeholder="getFieldName(field.key)"
-                                        :auto-grow="true"
-                                        rows="1"
-                                        :outlined="true"
-                                        :rules="requiredField(field.required, field.key)"
-                                        :required="field.required"
-                                        :label="getFieldName(field.key)"
-                                />
-                                <v-combobox
-                                        v-if="field.multi"
-                                        v-model="item[field.key]"
-                                        :placeholder="getFieldName(field.key)"
-                                        :outlined="true"
-                                        :rules="requiredFieldArray(field.required, field.key)"
-                                        :required="field.required"
-                                        :label="getFieldName(field.key)"
-                                        multiple
-                                        chips
-                                />
-                            </div>
+                            <dynamic-field v-for="field of fields[fieldTypes.String]" :key="field.key" v-model="item[field.key]" :field="field" />
                         </template>
                         <template v-if="fields[fieldTypes.Number]">
-                            <div v-for="field of fields[fieldTypes.Number]" :key="field.key">
-                                <v-text-field
-                                        v-if="!field.multi"
-                                        v-model="item[field.key]"
-                                        :placeholder="getFieldName(field.key)"
-                                        :outlined="true"
-                                        :rules="requiredFieldArray(field.required, field.key)"
-                                        :required="field.required"
-                                        :label="getFieldName(field.key)"
-                                        type="number"
-                                />
-                                <v-combobox
-                                        v-if="field.multi"
-                                        v-model="item[field.key]"
-                                        :placeholder="getFieldName(field.key)"
-                                        :outlined="true"
-                                        :rules="requiredObjectIdArray(field.required, field.key)"
-                                        :required="field.required"
-                                        :label="getFieldName(field.key)"
-                                        multiple
-                                        chips
-                                />
-                            </div>
+                            <dynamic-field v-for="field of fields[fieldTypes.Number]" :key="field.key" v-model="item[field.key]" :field="field" />
                         </template>
                         <template v-if="fields[fieldTypes.ObjectId]">
-                            <div v-for="field of fields[fieldTypes.ObjectId]" :key="field.key">
-                                <v-text-field
-                                        v-if="'_id' !== field.key && !field.multi"
-                                        v-model="item[field.key]"
-                                        :placeholder="getFieldName(field.key)"
-                                        :outlined="true"
-                                        :rules="requiredObjectId(field.required, field.key)"
-                                        :required="field.required"
-                                        :label="getFieldName(field.key)"
-                                />
-                                <v-combobox
-                                        v-if="'_id' !== field.key && field.multi"
-                                        v-model="item[field.key]"
-                                        :placeholder="getFieldName(field.key)"
-                                        :outlined="true"
-                                        :rules="requiredObjectIdArray(field.required, field.key)"
-                                        :required="field.required"
-                                        :label="getFieldName(field.key)"
-                                        multiple
-                                        chips
-                                />
-                            </div>
+                            <dynamic-field v-for="field of fields[fieldTypes.ObjectId]" :key="field.key" v-model="item[field.key]" :field="field" />
                         </template>
                         <template v-if="fields[fieldTypes.Date]">
                             <v-text-field
@@ -116,16 +50,7 @@
                             </v-dialog>
                         </template>
                         <template v-if="fields[fieldTypes.Boolean]">
-                            <v-switch
-                                    v-for="field of fields[fieldTypes.Boolean]"
-                                    v-model="item[field.key]"
-                                    :key="field.key"
-                                    :placeholder="getFieldName(field.key)"
-                                    :outlined="true"
-                                    :rules="requiredBoolean(field.required, field.key)"
-                                    :required="field.required"
-                                    :label="getFieldName(field.key)"
-                            />
+                            <dynamic-field v-for="field of fields[fieldTypes.Boolean]" :key="field.key" v-model="item[field.key]" :field="field" />
                         </template>
                     </v-col>
                 </v-row>
@@ -181,13 +106,15 @@
 <script>
     import { FieldTypes } from './../../lib/enums';
     import { http } from '../mixins/http';
+    import { form } from '../mixins/form';
     import _ from 'lodash';
     import { formats } from '../../lib/enums';
     import moment from 'moment';
 
     export default {
         mixins: [
-            http
+            http,
+            form
         ],
         props: [
             'allowedFields',
@@ -222,45 +149,6 @@
                     return [
                         v => !!v || 'Missing ' + _.startCase(fieldName),
                         v => Boolean('string' === typeof v && v.trim().length) || 'Invalid ' + _.startCase(fieldName),
-                    ]
-                }
-
-                return [];
-            },
-            requiredBoolean (isRequired, fieldName) {
-                if (isRequired) {
-                    return [
-                        v => 'boolean' === typeof v || 'Missing ' + _.startCase(fieldName),
-                    ]
-                }
-
-                return [];
-            },
-            requiredFieldArray (isRequired, fieldName) {
-                if (isRequired) {
-                    return [
-                        v => (Array.isArray(v) && Boolean(v.length)) || 'Missing ' + _.startCase(fieldName),
-                        v => (Array.isArray(v) && 0 === v.filter(val => 0 === val.trim().length).length) || 'Invalid ' + _.startCase(fieldName),
-                    ]
-                }
-
-                return [];
-            },
-            requiredObjectId (isRequired, fieldName) {
-                if (isRequired) {
-                    return [
-                        v => !!v || 'Missing ' + _.startCase(fieldName),
-                        v => Boolean('string' === typeof v && /^[a-z0-9]{24}$/.test(v)) || 'Invalid ' + _.startCase(fieldName),
-                    ]
-                }
-
-                return [];
-            },
-            requiredObjectIdArray (isRequired, fieldName) {
-                if (isRequired) {
-                    return [
-                        v => (Array.isArray(v) && Boolean(v.length)) || 'Missing ' + _.startCase(fieldName),
-                        v => (Array.isArray(v) && 0 === v.filter(val => false === /^[a-z0-9]{24}$/.test(val)).length) || 'Invalid ' + _.startCase(fieldName),
                     ]
                 }
 
@@ -305,7 +193,10 @@
             },
             async init () {
                 if (this.newItem) {
-                    this.item = {};
+                    const item = await this.get(
+                        `collections/${this.$route.params.collection}/initial`
+                    );
+                    this.item = this.parseModelFromDb(item);
                 } else {
                     const item = await this.get(
                         `collections/${this.$route.params.collection}/${this.document._id}`
@@ -313,6 +204,7 @@
                     this.item = this.parseModelFromDb(item);
                 }
                 this.fields = _.groupBy(this.allowedFields, 'type');
+                // this.fields = _(this.allowedFields).groupBy('type').sortBy('type');
                 this.loaded = true;
             },
             saveDateModal () {
@@ -384,9 +276,6 @@
                 this.loading = false;
 
             },
-            getFieldName (fieldKey = '') {
-                return fieldKey.split('.').map(val => _.startCase(val)).join(' > ');
-            }
         },
         watch: {
             document () {

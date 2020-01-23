@@ -61,6 +61,10 @@ class MongooseAdapter {
                     type: fieldType,
                     required: tree[key].required || false
                 };
+
+                if (Array.isArray(tree[key].enum) && tree[key].enum.length) {
+                    fields[targetKey].enum = tree[key].enum;
+                }
             }
         }
 
