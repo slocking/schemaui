@@ -195,7 +195,12 @@
 </script>
 
 <style scoped lang="scss">
-    th[role="columnheader"] {
-        white-space: nowrap;
+    ::v-deep .v-data-table {
+        th[role="columnheader"] {
+            white-space: nowrap;
+        }
+        td {
+            word-break: break-word;
+        }
     }
 </style>

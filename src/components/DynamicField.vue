@@ -105,6 +105,7 @@
                     label: self.getFieldName(field.key),
                     outlined: true,
                     required: field.required,
+                    dense: true,
                     rules: self.requiredField(field.required, field.key)
                 };
 
@@ -125,7 +126,7 @@
                             }
                         } else if (true === field.textarea) {
                             element = VTextarea;
-                            props.rows = 1;
+                            props['auto-grow'] = true;
                         }
                         break;
                     case FieldTypes.ObjectId:

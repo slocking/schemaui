@@ -24,6 +24,7 @@
                                     v-model="item[field.key]"
                                     :key="field.key"
                                     :outlined="true"
+                                    :dense="true"
                                     :rules="requiredField(field.required, field.key)"
                                     :required="field.required"
                                     :label="getFieldName(field.key)"
