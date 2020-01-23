@@ -62,11 +62,7 @@ class Api extends BaseRoute {
                         continue;
                     }
 
-                    if (true === fieldObj[field].multi) {
-                        orMatch.push({ [field]: { $in: regex } })
-                    } else {
-                        orMatch.push({ [field]: regex })
-                    }
+                    orMatch.push({ [field]: regex });
                 }
 
                 if (orMatch.length) {
@@ -122,6 +118,24 @@ class Api extends BaseRoute {
         const model = SchemaUI.SchemaUI.getModel(collectionName);
 
         return model.findById(model.base.Types.ObjectId(id));
+    }
+
+    async getCollectionInitialDocument (request) {
+        const { collectionName } = request.params;
+        const model = SchemaUI.SchemaUI.getModel(collectionName);
+        const parsedModel = SchemaUI.SchemaUI.routesMap[collectionName];
+        const fields = Object.keys(parsedModel.fields);
+        const newModel = new model({}).toObject();
+        delete newModel._id;
+
+        for (const field of fields) {
+            const fieldObj = parsedModel.fields[field];
+            if (true === fieldObj.required && FieldTypes.Boolean === fieldObj.type) {
+                _.set(newModel, field, false);
+            }
+        }
+
+        return newModel;
     }
 }
 

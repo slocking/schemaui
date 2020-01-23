@@ -16,7 +16,7 @@ class SchemaUI {
     }
 
     registerModel (newModel, options = {}) {
-        const model = this.adapter.parseNewModel(newModel);
+        const model = this.adapter.parseNewModel(newModel, options);
         model.options = options;
         model.index = (this.models.push(newModel)) - 1;
 

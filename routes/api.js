@@ -23,8 +23,14 @@ ApiRoutes.post(
 );
 
 ApiRoutes.get(
+    '/collections/:collectionName/initial',
+    ApiController.getCollectionInitialDocument
+);
+
+ApiRoutes.get(
     '/collections/:collectionName/:id',
     ApiController.getCollectionDocument
 );
+
 
 module.exports = ApiRoutes;

@@ -61,15 +61,32 @@ class MongooseAdapter {
                     type: fieldType,
                     required: tree[key].required || false
                 };
+
+                if (Array.isArray(tree[key].enum) && tree[key].enum.length) {
+                    fields[targetKey].enum = tree[key].enum;
+                }
             }
         }
 
         return fields;
     }
 
-    parseNewModel (newModel = {}) {
+    addOptionsToFields (fields, options = {}) {
+        const fieldKeys = Object.keys(fields);
+
+        for (const key of fieldKeys) {
+            const field = fields[key];
+            const fieldOptions = _.get(options, field.key);
+            if ('object' === typeof fieldOptions && fieldOptions) {
+                Object.assign(field, fieldOptions);
+            }
+        }
+    }
+
+    parseNewModel (newModel = {}, options) {
         const tree = newModel.schema.tree;
         const fields = this.treeToFields(tree);
+        this.addOptionsToFields(fields, options.fields);
 
 
         return {
