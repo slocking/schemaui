@@ -1,8 +1,8 @@
 # Schema UI
 
 [![NPM version](https://img.shields.io/npm/v/schemaui.svg)](https://npmjs.org/package/codecov)
-[![Build Status](https://travis-ci.com/molaga/schemaui.svg?branch=master)](https://travis-ci.com/molaga/schemaui)
-[![codecov.io](http://codecov.io/github/molaga/schemaui/coverage.svg?branch=master)](http://codecov.io/github/molaga/schemaui?branch=master)
+[![Build Status](https://travis-ci.com/slocking/schemaui.svg?branch=master)](https://travis-ci.com/slocking/schemaui)
+[![codecov.io](http://codecov.io/github/slocking/schemaui/coverage.svg?branch=master)](http://codecov.io/github/slocking/schemaui?branch=master)
 
 Turn every mongoose schema, into a shiny, slick, good looking UI, that will help you manage fully CRUD operations to your registered models.
 
@@ -62,4 +62,4 @@ Initiates express router that injects the admin UI into your existing app.
 *Schema UI middleware must be under `/schemaui` route, any other route will not be able to load SchemaUI's admin panel*
 
 ## Demo
-Live demo & source code can be found [here](https://github.com/molaga/schemaui-demo)
+Live demo & source code can be found [here](https://github.com/slocking/schemaui-demo)
