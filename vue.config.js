@@ -2,5 +2,6 @@ module.exports = {
   "transpileDependencies": [
     "vuetify"
   ],
-  publicPath: '/schemaui'
+  publicPath: '/schemaui',
+  productionSourceMap: false
 };
