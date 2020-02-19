@@ -1,0 +1,4 @@
+src
+test
+./*.config.js
+.travis.yml
