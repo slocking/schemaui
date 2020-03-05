@@ -20,11 +20,11 @@ class SchemaUI {
         model.options = options;
         model.index = (this.models.push(newModel)) - 1;
 
-        this.routesMap[model.name] = model;
+        this.routesMap.set(model.name, model);
     }
 
     getModel (modelName) {
-        const existingModel = this.routesMap[modelName];
+        const existingModel = this.routesMap.get(modelName);
 
         if (!existingModel) {
             throw new Error(Errors.generalErrors.collectionNotFound);
@@ -36,7 +36,7 @@ class SchemaUI {
     init (options = {}) {
         this.options = options;
         this.models = [];
-        this.routesMap = {};
+        this.routesMap = new Map();
         this.adapter = new (options.adapter || MongooseAdapter)();
         this.router = new express.Router();
     }

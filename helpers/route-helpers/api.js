@@ -7,7 +7,12 @@ const FieldTypes = require('../../lib/enums').FieldTypes;
 
 class Api extends BaseRoute {
     async getCollections () {
-        return SchemaUI.SchemaUI.routesMap;
+        const routes = {};
+        for (let [key, value] of SchemaUI.SchemaUI.routesMap) {
+            routes[key] = value;
+        }
+
+        return routes;
     }
 
     async getCollectionDocuments (request) {
@@ -20,7 +25,7 @@ class Api extends BaseRoute {
         } = request.body;
 
         const model = SchemaUI.SchemaUI.getModel(collectionName);
-        const parsedModel = SchemaUI.SchemaUI.routesMap[collectionName];
+        const parsedModel = SchemaUI.SchemaUI.routesMap.get(collectionName);
         const fieldObj = parsedModel.fields;
         let fields = Object.keys(fieldObj);
         let match = {};
@@ -89,7 +94,7 @@ class Api extends BaseRoute {
     async saveCollectionDocument (request) {
         const collectionName = request.params.collection;
         const model = SchemaUI.SchemaUI.getModel(collectionName);
-        const parsedModel = SchemaUI.SchemaUI.routesMap[collectionName];
+        const parsedModel = SchemaUI.SchemaUI.routesMap.get(collectionName);
         const fields = Object.keys(parsedModel.fields);
         const newItem = request.body;
         let itemToSave = new model({});
@@ -123,7 +128,7 @@ class Api extends BaseRoute {
     async getCollectionInitialDocument (request) {
         const { collectionName } = request.params;
         const model = SchemaUI.SchemaUI.getModel(collectionName);
-        const parsedModel = SchemaUI.SchemaUI.routesMap[collectionName];
+        const parsedModel = SchemaUI.SchemaUI.routesMap.get(collectionName);
         const fields = Object.keys(parsedModel.fields);
         const newModel = new model({}).toObject();
         delete newModel._id;
