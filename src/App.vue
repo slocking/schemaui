@@ -7,6 +7,9 @@
       </span>
 
       <v-spacer />
+      <span>
+        v{{config.version}}
+      </span>
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" app clipped color="grey lighten-4" v-if="!headless">
@@ -60,6 +63,7 @@ export default {
     this.collections = await this.get('collections');
     this.$router.collections = this.collections;
     this.headless = ('true' === this.$route.query.headless);
+    this.config = await this.get('config');
   },
 
   computed: {
@@ -76,7 +80,8 @@ export default {
     drawer: true,
     headless: true,
     selectedCollection: 'Glossary',
-    collections: {}
+    collections: {},
+    config: {}
   }),
 };
 </script>

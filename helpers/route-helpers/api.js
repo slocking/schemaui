@@ -1,4 +1,5 @@
 const SchemaUI = require('../../index');
+const pkg = require('../../package');
 const BaseRoute = require('./base');
 const escapeRegex = require('escape-string-regexp');
 const Errors = require('../../lib/errors');
@@ -6,6 +7,12 @@ const _ = require('lodash');
 const FieldTypes = require('../../lib/enums').FieldTypes;
 
 class Api extends BaseRoute {
+    async getConfig () {
+        return {
+            version: pkg.version,
+        }
+    }
+
     async getCollections () {
         const routes = {};
         for (let [key, value] of SchemaUI.SchemaUI.routesMap) {
