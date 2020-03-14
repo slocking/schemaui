@@ -29,7 +29,7 @@
                             :loading="loading"
                     >
                         <template v-slot:expanded-item="{headers, item}">
-                            <td v-if="item && item._id" :colspan="headers.length" style="background-color: #efefef">
+                            <td v-if="item && item._id" :colspan="headers.length" class="expanded-document">
                                 <document-edit
                                         @documentUpdate="onDocumentUpdate"
                                         @documentDelete="onDocumentDelete"
@@ -201,6 +201,16 @@
         }
         td {
             word-break: break-word;
+        }
+        td.expanded-document {
+            background-color: #efefef;
+        }
+    }
+</style>
+<style lang="scss">
+    .theme--dark {
+        td.expanded-document {
+            background-color: #222 !important;
         }
     }
 </style>
