@@ -38,7 +38,7 @@ app.use('/schemaui', SchemaUI.middleware());
 
 Intuitive, responsive, generic CRM dashboard, that created to help you manage your models
 
-![Schema UI Dashboard](https://user-images.githubusercontent.com/7160836/72006783-04122e80-3259-11ea-9079-73003ef679ac.png)
+![SchemaUI Dashboard](https://user-images.githubusercontent.com/7160836/76688374-c654cc00-6634-11ea-885d-3f18f2dfcf72.gif)
 
 ## Documentation
 
