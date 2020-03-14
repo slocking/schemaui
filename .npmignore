@@ -2,4 +2,8 @@
 src
 test
 ./*.config.js
+.nyc_output
+coverage
 .travis.yml
+CHANGELOG.md
+*.config.js
