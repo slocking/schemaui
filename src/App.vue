@@ -1,16 +1,28 @@
 <template>
   <v-app>
-    <v-app-bar app clipped-left color="orange" v-if="!headless">
+    <v-app-bar app clipped-left class="orange" v-if="!headless">
       <v-app-bar-nav-icon @click="drawer = !drawer" />
       <span class="title ml-3 mr-5">
         Schema UI&nbsp;<span class="font-weight-light">Dashboard</span>
       </span>
 
       <v-spacer />
+      <span>
+        <v-switch
+                :label="$vuetify.theme.dark ? 'Dark' : 'Light'"
+                v-model="$vuetify.theme.dark"
+                inset
+                hide-details
+                style="margin-right: 15px;"
+        />
+      </span>
+      <span>
+        v{{config.version}}
+      </span>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" app clipped color="grey lighten-4" v-if="!headless">
-      <v-list rounded class="grey lighten-4">
+    <v-navigation-drawer v-model="drawer" app clipped v-if="!headless">
+      <v-list rounded>
         <v-subheader>COLLECTIONS</v-subheader>
         <v-list-item-group active-class="active">
           <v-list-item link
@@ -60,6 +72,8 @@ export default {
     this.collections = await this.get('collections');
     this.$router.collections = this.collections;
     this.headless = ('true' === this.$route.query.headless);
+    this.config = await this.get('config');
+    this.get('')
   },
 
   computed: {
@@ -76,7 +90,9 @@ export default {
     drawer: true,
     headless: true,
     selectedCollection: 'Glossary',
-    collections: {}
+    collections: {},
+    config: {},
+    currentVersion: undefined
   }),
 };
 </script>
@@ -101,6 +117,16 @@ export default {
 
       .v-icon {
         margin: 0 3px;
+      }
+    }
+  }
+
+  .theme--dark {
+    nav > .v-navigation-drawer__content {
+      .credit {
+        a {
+          color: white;
+        }
       }
     }
   }

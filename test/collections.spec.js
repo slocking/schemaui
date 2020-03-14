@@ -42,6 +42,15 @@ describe('SchemaUI App', () => {
             .to.have.all.keys(['name', 'fields', 'options', 'index']);
     });
 
+    it('GET /api/collections/:collectionName/initial', async () => {
+        const request = await chai.request(app).get(BASE_PATH + `/api/collections/${User.modelName}/initial`);
+        expect(request).to.have.status(200);
+        expect(request.body).to.have.property('success').to.equal(true);
+        expect(request.body).to.have.property('data')
+            .to.have.property('isActive')
+            .to.equal(true);
+    });
+
     it('POST /api/collections/:collectionName', async () => {
         const request = await chai.request(app).post(BASE_PATH + '/api/collections/' + User.modelName)
             .set('Content-Type', defaultHeaders['Content-Type'])
@@ -82,6 +91,14 @@ describe('SchemaUI App', () => {
         expect(request.body).to.have.property('success').to.equal(true);
         expect(request.body).to.have.property('data').to.have.property('_id');
         existingUser = request.body.data;
+    });
+
+    it('GET /api/collections/:collectionName/:id', async () => {
+        const request = await chai.request(app).get(BASE_PATH + `/api/collections/${User.modelName}/${existingUser._id}`)
+            .set('Content-Type', defaultHeaders['Content-Type']);
+        expect(request).to.have.status(200);
+        expect(request.body).to.have.property('success').to.equal(true);
+        expect(request.body).to.have.property('data').to.have.property('_id');
     });
 
     it('POST /api/collections/:collectionName/save - edit user fields', async () => {

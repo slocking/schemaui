@@ -3,6 +3,11 @@ const ApiRoutes = new express.Router();
 const ApiController = require('../helpers/route-helpers/api');
 
 ApiRoutes.get(
+    '/config',
+    ApiController.getConfig
+);
+
+ApiRoutes.get(
     '/collections',
     ApiController.getCollections
 );
