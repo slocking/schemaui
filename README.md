@@ -62,4 +62,4 @@ Initiates express router that injects the admin UI into your existing app.
 *Schema UI middleware must be under `/schemaui` route, any other route will not be able to load SchemaUI's admin panel*
 
 ## Demo
-Live demo & source code can be found [here](https://github.com/slocking/schemaui-demo)
+Live demo & source code can be found [here](https://github.com/molaga/schemaui-demo)
