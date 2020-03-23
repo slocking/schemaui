@@ -24,5 +24,5 @@ Initial Version
 
 
 [unreleased]: https://github.com/slocking/schemaui/compare/v1.0.4...HEAD
-[1.0.4]: https://github.com/slocking/schemaui/compare/v0.8.0...1.0.4
+[1.0.4]: https://github.com/slocking/schemaui/compare/v0.8.0...v1.0.4
 [0.8.0]: https://github.com/slocking/schemaui/compare/v0.8.0
