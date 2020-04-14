@@ -5,6 +5,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] 
 
+### Added
+
+- add vuex state management
+- abort background requests that threw errors
+
 ## [1.0.4] - 2019-03-14 
 
 ### Added

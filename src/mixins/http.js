@@ -17,12 +17,13 @@ export const http = {
             }
         }).then(res => res.json()).then(res => handleResponse(res)),
 
-        post: (url, data) => fetch(BASE_URL + url, {
+        post: (url, data, signal) => fetch(BASE_URL + url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
+            signal,
         }).then(res => res.json()).then(res => handleResponse(res)),
 
         delete: (url) => fetch(BASE_URL + url, {

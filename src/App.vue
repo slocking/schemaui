@@ -9,15 +9,16 @@
       <v-spacer />
       <span>
         <v-switch
-                :label="$vuetify.theme.dark ? 'Dark' : 'Light'"
-                v-model="$vuetify.theme.dark"
+                :label="dark ? 'Dark' : 'Light'"
+                @change="toggleDark"
+                :input-value="dark"
                 inset
                 hide-details
                 style="margin-right: 15px;"
         />
       </span>
       <span>
-        v{{config.version}}
+        v{{version}}
       </span>
     </v-app-bar>
 
@@ -58,8 +59,9 @@
 </template>
 
 <script>
-import { http } from './mixins/http';
 import _ from 'lodash';
+import { mapGetters, mapActions } from 'vuex';
+import { http } from './mixins/http';
 
 export default {
   name: 'App',
@@ -72,27 +74,28 @@ export default {
     this.collections = await this.get('collections');
     this.$router.collections = this.collections;
     this.headless = ('true' === this.$route.query.headless);
-    this.config = await this.get('config');
-    this.get('')
+    this.updateGlobal();
   },
 
   computed: {
     _ () {
       return _;
     },
+    ...mapGetters(['version', 'dark']),
     hasCollections () {
       return Boolean(Object.keys(this.collections).length);
     }
+  },
+
+  methods: {
+    ...mapActions(['updateGlobal', 'toggleDark'])
   },
 
   data: () => ({
     loaded: false,
     drawer: true,
     headless: true,
-    selectedCollection: 'Glossary',
     collections: {},
-    config: {},
-    currentVersion: undefined
   }),
 };
 </script>

@@ -100,12 +100,14 @@
             headers: [],
             items: [],
             searchTimeut: 0,
+            fetchAborter: new AbortController(),
         }),
         async mounted () {
             this.init();
         },
         watch: {
             $route () {
+                this.abortFetch();
                 this.init();
                 this.fetchResults();
             },
@@ -142,7 +144,11 @@
                         payload.sort = { [sortBy[0]]: (sortDesc.length && true === sortDesc[0] ? -1 : 1) }
                     }
 
-                    const { items, fields, totalItems } = (await this.post('collections/' + this.$route.params.collection, payload));
+                    const { items, fields, totalItems } = (await this.post(
+                        'collections/' + this.$route.params.collection,
+                        payload,
+                        this.fetchAborter.signal
+                    ));
                     this.totalItems = totalItems;
                     this.items = items.map(item => {
                         fields.map(field => {
@@ -161,11 +167,15 @@
                         return { value: field, text: prettyField };
                     });
                 } catch (error) {
+                    if (error instanceof DOMException) { // Aborted
+                        return;
+                    }
                     this.errorPopup.message = error.message;
                     this.errorPopup.open = true;
+                } finally {
+                    this.loading = false;
                 }
 
-                this.loading = false;
             },
             onDocumentUpdate (newItem) {
                 const existingDoc = this.items.find(item => item._id === newItem._id);
@@ -189,6 +199,10 @@
             openToast (message) {
                 this.toast.message = message;
                 this.toast.open = true;
+            },
+            abortFetch () {
+                this.fetchAborter.abort();
+                this.fetchAborter = new AbortController();
             }
         }
     }
