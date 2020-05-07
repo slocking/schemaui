@@ -52,9 +52,29 @@ Intuitive, responsive, generic CRM dashboard, that created to help you manage yo
 
 `options` (optional) - An object with properties, that define set of options per single model (collection)
 
-| Property      |   Type    | Description           |
-| :---------    | :---      | :---                  |
-| listFields    | String[]  | array of strings that defines which fields to display per item in the items view  |
+| Property      | Type      | Description                                                                                   |
+| :---------    | :---      | :---                                                                                          |
+| listFields    | String[]  | (optional) array of strings that defines which fields to display per item in the items view   |
+| fields        | Object    | (optional) define properties that exist in the schema for custom options per field            |
+| permissions   | Object    | (optional) set of permissions (read,create,edit,delete) with Boolean values.                  |
+#### Example
+
+```js
+SchemaUI.registerModel(Image, {
+    listFields: ['title', 'type', 'isActive'], // fields that present before expanding
+    fields: { // define explicit options per field
+        'description': {
+            textarea: true // make the description field auto-expand, behave like textarea
+        }
+    },
+    permissions: { // define permissions per model
+        read: true, // readonly
+        create: false,
+        edit: false,
+        delete: false
+    }
+});
+```
 
 ### SchemaUI.middleware()
 Initiates express router that injects the admin UI into your existing app.

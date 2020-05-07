@@ -33,6 +33,7 @@
                                 <document-edit
                                         @documentUpdate="onDocumentUpdate"
                                         @documentDelete="onDocumentDelete"
+                                        :permissions="model.options.permissions"
                                         :allowed-fields="model.fields"
                                         :document="item"
                                 />
@@ -40,7 +41,7 @@
                         </template>
                     </v-data-table>
                 </v-card>
-                <v-btn color="blue" @click="newDocumentModal = true" dark big fixed bottom right fab>
+                <v-btn color="blue" v-if="model.options.permissions.create" @click="newDocumentModal = true" dark big fixed bottom right fab>
                     <v-icon>mdi-plus</v-icon>
                 </v-btn>
             </v-col>
@@ -54,8 +55,14 @@
                 Close
             </v-btn>
         </v-snackbar>
-        <v-dialog ref="dateModal" v-if="model && newDocumentModal" v-model="newDocumentModal" width="70%">
-            <document-edit class="popup-hosting" :allowed-fields="model.fields" :new-item="true" @documentUpdate="onDocumentUpdate" />
+        <v-dialog class="new-document-dialog" v-if="model && newDocumentModal" v-model="newDocumentModal" width="70%">
+            <document-edit
+                    class="popup-hosting"
+                    :allowed-fields="model.fields"
+                    :permissions="model.options.permissions"
+                    :new-item="true"
+                    @documentUpdate="onDocumentUpdate"
+            />
         </v-dialog>
         <v-dialog v-model="errorPopup.open" width="290px">
             <v-card>
@@ -130,7 +137,8 @@
                 clearTimeout(this.searchTimeut);
 
                 this.searchTimeut = setTimeout(() => {
-                    this.fetchResults()
+                    this.options.page = 1;
+                    this.fetchResults();
                 }, 700);
             },
             async fetchResults () {
@@ -140,7 +148,7 @@
                     const { sortBy, sortDesc, page, itemsPerPage } = this.options;
                     const payload = { search: this.search, itemsPerPage, page };
 
-                    if (sortBy.length) {
+                    if (Array.isArray(sortBy) && sortBy.length) {
                         payload.sort = { [sortBy[0]]: (sortDesc.length && true === sortDesc[0] ? -1 : 1) }
                     }
 
@@ -166,6 +174,13 @@
 
                         return { value: field, text: prettyField };
                     });
+
+                    // open single item if it's a single objectId (recently added / searched)
+                    if (true === /^[0-9a-z]{24}$/.test(this.search) && 1 === this.items.length && this.search === this.items[0]._id) {
+                        this.expanded = this.items;
+                    } else {
+                        this.expanded = [];
+                    }
                 } catch (error) {
                     if (error instanceof DOMException) { // Aborted
                         return;
@@ -182,10 +197,9 @@
                 if (existingDoc) {
                     Object.assign(existingDoc, newItem);
 
-                    this.openToast('Document Successfully Saved!')
+                    this.openToast('Document Successfully Saved!');
                 } else { // new item
                     this.newDocumentModal = false;
-                    this.options.page = 1;
                     this.search = newItem._id;
                 }
             },
@@ -222,8 +236,13 @@
     }
 </style>
 <style lang="scss">
+    .popup-hosting {
+        background-color: white;
+    }
+
     .theme--dark {
-        td.expanded-document {
+        td.expanded-document,
+        .popup-hosting {
             background-color: #222 !important;
         }
     }

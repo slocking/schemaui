@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const http = require('http');
 const SchemaUI = require('../../index');
 const User = require('./user.model');
+const Image = require('./image.model');
 
 const port = 4000;
 SchemaUI.init();
@@ -25,6 +26,15 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 
 SchemaUI.registerModel(User, {
     listFields: ['email', 'firstName']
+});
+
+SchemaUI.registerModel(Image, {
+    permissions: {
+        read: false,
+        edit: false,
+        create: false,
+        delete: false,
+    }
 });
 
 const app = express();

@@ -10,13 +10,13 @@
                 <v-row>
                     <v-col sm="10" md="8" lg="6">
                         <template v-if="fields[fieldTypes.String]">
-                            <dynamic-field v-for="field of fields[fieldTypes.String]" :key="field.key" v-model="item[field.key]" :field="field" />
+                            <dynamic-field v-for="field of fields[fieldTypes.String]" :key="field.key" v-model="item[field.key]" :field="field" :disabled="!canEdit" />
                         </template>
                         <template v-if="fields[fieldTypes.Number]">
-                            <dynamic-field v-for="field of fields[fieldTypes.Number]" :key="field.key" v-model="item[field.key]" :field="field" />
+                            <dynamic-field v-for="field of fields[fieldTypes.Number]" :key="field.key" v-model="item[field.key]" :field="field" :disabled="!canEdit" />
                         </template>
                         <template v-if="fields[fieldTypes.ObjectId]">
-                            <dynamic-field v-for="field of fields[fieldTypes.ObjectId]" :key="field.key" v-model="item[field.key]" :field="field" />
+                            <dynamic-field v-for="field of fields[fieldTypes.ObjectId]" :key="field.key" v-model="item[field.key]" :field="field" :disabled="!canEdit" />
                         </template>
                         <template v-if="fields[fieldTypes.Date]">
                             <v-text-field
@@ -28,6 +28,7 @@
                                     :rules="requiredField(field.required, field.key)"
                                     :required="field.required"
                                     :label="getFieldName(field.key)"
+                                    :disabled="!canEdit"
                                     @click="openDateModal(field.key, index)"
                                     @focus="openDateModal(field.key, index)"
                                     prepend-icon="mdi-calendar"
@@ -51,7 +52,7 @@
                             </v-dialog>
                         </template>
                         <template v-if="fields[fieldTypes.Boolean]">
-                            <dynamic-field v-for="field of fields[fieldTypes.Boolean]" :key="field.key" v-model="item[field.key]" :field="field" />
+                            <dynamic-field v-for="field of fields[fieldTypes.Boolean]" :key="field.key" v-model="item[field.key]" :field="field" :disabled="!canEdit" />
                         </template>
                     </v-col>
                 </v-row>
@@ -59,8 +60,8 @@
                     <v-spacer />
                     <v-btn v-if="newItem" raised color="primary" :loading="loading" :disabled="loading" type="submit">Create new Document</v-btn>
                     <template v-if="!newItem">
-                        <v-btn text color="#f00" :disabled="loading" type="button" @click="openDeleteConfirm = true">Delete</v-btn>
-                        <v-btn raised color="primary" :loading="loading" :disabled="loading" type="submit">Save Changes</v-btn>
+                        <v-btn text color="#f00" :disabled="!canDelete || loading" type="button" @click="openDeleteConfirm = true">Delete</v-btn>
+                        <v-btn raised color="primary" :loading="loading" :disabled="!canEdit || loading" type="submit">Save Changes</v-btn>
                     </template>
                 </v-card-actions>
                 <v-dialog
@@ -120,7 +121,8 @@
         props: [
             'allowedFields',
             'document',
-            'newItem'
+            'newItem',
+            'permissions'
         ],
         data () {
             return {
@@ -142,6 +144,12 @@
         computed: {
             _ () {
                 return _;
+            },
+            canEdit () {
+                return Boolean(true === this.permissions.edit || (true === this.newItem && true === this.permissions.create));
+            },
+            canDelete () {
+                return Boolean(true === this.permissions.delete);
             }
         },
         methods: {
@@ -205,7 +213,6 @@
                     this.item = this.parseModelFromDb(item);
                 }
                 this.fields = _.groupBy(this.allowedFields, 'type');
-                // this.fields = _(this.allowedFields).groupBy('type').sortBy('type');
                 this.loaded = true;
             },
             saveDateModal () {

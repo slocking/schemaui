@@ -106,6 +106,7 @@
                     outlined: true,
                     required: field.required,
                     dense: true,
+                    disabled: self.$attrs.disabled || false,
                     rules: self.requiredField(field.required, field.key)
                 };
 

@@ -88,10 +88,29 @@ class MongooseAdapter {
         const fields = this.treeToFields(tree);
         this.addOptionsToFields(fields, options.fields);
 
-
         return {
             name: newModel.modelName,
             fields
+        }
+    }
+
+    addOptionsToModel (model, options = {}) {
+        const {
+            listFields = [],
+            permissions = {}
+        } = options;
+
+        const modelPermissions = {
+            [Enum.PermissionType.Read]: true,
+            [Enum.PermissionType.Create]: true,
+            [Enum.PermissionType.Edit]: true,
+            [Enum.PermissionType.Delete]: true,
+            ...permissions,
+        }
+
+        return {
+            listFields,
+            permissions: modelPermissions
         }
     }
 }

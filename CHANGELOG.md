@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - add vuex state management
 - abort background requests that threw errors
+- support for permissions per model (create, read, edit, delete)
+- search enhancements - possible to search in all fields that are string/objectIds
+- improve & add tests
+
+## BugFixes
+
+- applying filters on a collection will take you to page no. 1
+- create new document popup - fix transparent background while loading
 
 ## [1.0.4] - 2019-03-14 
 
