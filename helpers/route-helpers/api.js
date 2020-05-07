@@ -16,7 +16,9 @@ class Api extends BaseRoute {
     async getCollections () {
         const routes = {};
         for (let [key, value] of SchemaUI.SchemaUI.routesMap) {
-            routes[key] = value;
+            if (true === value.options.permissions.read) {
+                routes[key] = value;
+            }
         }
 
         return routes;
@@ -63,24 +65,27 @@ class Api extends BaseRoute {
         }
 
         if (search) {
+            const $or = [];
+            let termType = FieldTypes.String;
+            let termValue = new RegExp(escapeRegex(search), 'i');
+
             if (/^[0-9a-z]{24}$/.test(search)) {
-                match = { _id: model.base.Types.ObjectId(search)  };
-            } else {
-                const orMatch = [];
-                const regex = new RegExp(escapeRegex(search), 'i');
+                termType = FieldTypes.ObjectId;
+                termValue = model.base.Types.ObjectId(search);
+            }
 
-                for (const field of fields) {
-                    if (FieldTypes.String !== fieldObj[field].type) {
-                        continue;
-                    }
+            for (const fieldKey in fieldObj) {
+                const field = fieldObj[fieldKey];
 
-                    orMatch.push({ [field]: regex });
-                }
-
-                if (orMatch.length) {
-                    match = { $or: orMatch };
+                if (termType === field.type) {
+                    $or.push({ [field.key]: termValue });
                 }
             }
+
+            if ($or.length) {
+                match = { $or };
+            }
+
             query.unshift({ $match: match });
         }
 

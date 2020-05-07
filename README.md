@@ -56,6 +56,19 @@ Intuitive, responsive, generic CRM dashboard, that created to help you manage yo
 | :---------    | :---      | :---                  |
 | listFields    | String[]  | array of strings that defines which fields to display per item in the items view  |
 
+#### Example
+
+```js
+SchemaUI.registerModel(Image, {
+    listFields: ['title', 'type', 'isActive'], // fields that present before expanding
+    fields: { // options per field
+        'description': {
+            textarea: true // make the description field auto-expand, behave like textarea
+        }
+    }
+});
+```
+
 ### SchemaUI.middleware()
 Initiates express router that injects the admin UI into your existing app.
 

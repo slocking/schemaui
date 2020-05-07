@@ -17,7 +17,7 @@ class SchemaUI {
 
     registerModel (newModel, options = {}) {
         const model = this.adapter.parseNewModel(newModel, options);
-        model.options = options;
+        model.options = this.adapter.addOptionsToModel(model, options);
         model.index = (this.models.push(newModel)) - 1;
 
         this.routesMap.set(model.name, model);
