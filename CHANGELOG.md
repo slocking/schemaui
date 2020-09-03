@@ -5,6 +5,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] 
 
+## [1.1.0] - 2020-05-08 
+
 ### Added
 
 - add vuex state management
@@ -18,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - applying filters on a collection will take you to page no. 1
 - create new document popup - fix transparent background while loading
 
-## [1.0.4] - 2019-03-14 
+## [1.0.4] - 2020-03-14 
 
 ### Added
 
@@ -30,12 +32,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - improve test coverage
 - routesMap is now Map instead of Object
 
-
-## [0.8.0] - 2019-02-15
+``
+## [0.8.0] - 2020-02-15
 
 Initial Version
 
 
-[unreleased]: https://github.com/slocking/schemaui/compare/v1.0.4...HEAD
+[unreleased]: https://github.com/slocking/schemaui/compare/master...dev
+[1.1.0]: https://github.com/slocking/schemaui/compare/v1.0.5...v1.1.0
 [1.0.4]: https://github.com/slocking/schemaui/compare/v0.8.0...v1.0.4
 [0.8.0]: https://github.com/slocking/schemaui/compare/v0.8.0
