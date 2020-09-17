@@ -5,6 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] 
 
+## [1.1.1] - 2020-05-08 
+
+### Added
+
+- typings are now available 
+
 ## [1.1.0] - 2020-05-08 
 
 ### Added
@@ -39,6 +45,7 @@ Initial Version
 
 
 [unreleased]: https://github.com/slocking/schemaui/compare/master...dev
+[1.2.0]: https://github.com/slocking/schemaui/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/slocking/schemaui/compare/v1.0.5...v1.1.0
 [1.0.4]: https://github.com/slocking/schemaui/compare/v0.8.0...v1.0.4
 [0.8.0]: https://github.com/slocking/schemaui/compare/v0.8.0
