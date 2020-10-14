@@ -6,10 +6,13 @@ interface IPermissions {
 }
 
 /**
- * TBD - Global options for SchemaUI package
+ * Global options for SchemaUI package
  */
 interface IGlobalOptions {
-
+    /**
+     * enable auditing model, and log changes to this collection (audit_log)
+      */
+    auditLog?: boolean;
 }
 
 interface IModelOptions {
@@ -28,6 +31,7 @@ interface IModelOptions {
 }
 
 declare class SchemaUI {
+    options: IGlobalOptions;
     init (options?: IGlobalOptions): void;
     /**
      *

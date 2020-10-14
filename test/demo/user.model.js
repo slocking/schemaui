@@ -13,9 +13,14 @@ const userSchema = new Schema({
     lastName: String,
     isActive: {
         type: Boolean,
+        required: true,
         default: true
     },
     hobbies: [String],
+    title: {
+        type: String,
+        enum: ['mr', 'mrs', 'ms', 'mss']
+    },
     dates: {
         lastActive: {
             type: Date

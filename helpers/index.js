@@ -34,11 +34,18 @@ class SchemaUI {
     }
 
     init (options = {}) {
-        this.options = options;
+        this.options = this.prepareGlobalOptions(options);
         this.models = [];
         this.routesMap = new Map();
         this.adapter = new (options.adapter || MongooseAdapter)();
         this.router = new express.Router();
+    }
+
+    prepareGlobalOptions (customOptions) {
+        return {
+            auditLog: true,
+            ...customOptions
+        }
     }
 
     getRoutes () {
