@@ -52,7 +52,7 @@
 
     <v-content>
       <template v-if="hasCollections">
-        <router-view />
+        <v-jsoneditor v-model="json" :options="jsonOptions" :plus="false" height="400px" @error="onError"></v-jsoneditor>
       </template>
     </v-content>
   </v-app>
@@ -88,7 +88,11 @@ export default {
   },
 
   methods: {
-    ...mapActions(['updateGlobal', 'toggleDark'])
+    ...mapActions(['updateGlobal', 'toggleDark']),
+    onError (e) {
+      // eslint-disable-next-line no-console
+      console.log(e)
+    }
   },
 
   data: () => ({
@@ -96,6 +100,13 @@ export default {
     drawer: true,
     headless: true,
     collections: {},
+    jsonOptions: {
+      mode: 'code',
+      mainMenuBar: false
+    },
+    json: {
+      "hello": "vue"
+    }
   }),
 };
 </script>
