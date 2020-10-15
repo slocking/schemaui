@@ -1,4 +1,5 @@
 const Errors                    = require('../lib/errors');
+const { AuditTypes }            = require('../lib/enums');
 const chai                      = require('chai');
 const chaiHttp                  = require('chai-http');
 const app                       = require('./demo/app');
@@ -142,6 +143,17 @@ describe('SchemaUI App', () => {
             expect(request.body).to.have.property('success').to.equal(true);
             expect(request.body).to.have.property('data').to.have.property('firstName').to.equal(newFirstName);
             existingUser = request.body.data;
+        });
+
+        it('should have a audit_log record after edit', async () => {
+            const mongoose = User.base;
+            const result = await mongoose.models['SchemaUIAuditLog'].findOne({
+                type: AuditTypes.edit,
+                collection_name: User.collection.name,
+                document_id: mongoose.Types.ObjectId(existingUser._id)
+            }).lean().exec();
+
+            expect(result.modifiedFields[0]).to.include({ field : 'firstName', newValue: 'custom_modified' })
         });
 
         it('should add additional user', async () => {

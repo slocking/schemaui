@@ -59,7 +59,8 @@ class MongooseAdapter {
                     key: targetKey,
                     multi,
                     type: fieldType,
-                    required: tree[key].required || false
+                    required: tree[key].required || false,
+                    default: tree[key].default
                 };
 
                 if (Array.isArray(tree[key].enum) && tree[key].enum.length) {

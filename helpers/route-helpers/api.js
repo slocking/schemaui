@@ -1,10 +1,11 @@
-const SchemaUI = require('../../index');
-const pkg = require('../../package');
-const BaseRoute = require('./base');
-const escapeRegex = require('escape-string-regexp');
-const Errors = require('../../lib/errors');
-const _ = require('lodash');
-const FieldTypes = require('../../lib/enums').FieldTypes;
+const SchemaUI                      = require('../../index');
+const pkg                           = require('../../package');
+const BaseRoute                     = require('./base');
+const escapeRegex                   = require('escape-string-regexp');
+const Errors                        = require('../../lib/errors');
+const _                             = require('lodash');
+const { FieldTypes, AuditTypes }    = require('../../lib/enums');
+const { getAuditLogModel }          = require('../../lib/utils')
 
 class Api extends BaseRoute {
     async getConfig () {
@@ -96,35 +97,70 @@ class Api extends BaseRoute {
         };
     }
 
-    removeCollectionDocument (request) {
+    removeCollectionDocument (request, response) {
         const { collectionName, documentId } = request.params;
         const model = SchemaUI.SchemaUI.getModel(collectionName);
+        const auditLogModel = getAuditLogModel(model.base, model.db);
+
+        if (true === SchemaUI.SchemaUI.options.auditLog) {
+            new auditLogModel({
+                type: AuditTypes.delete,
+                collection_name: model.collection.name,
+                document_id: documentId,
+                initiator: (response.locals || {}).initiator
+            })
+                .save().catch(error => console.log(`error while trying to save audit log: ${error.message}`));
+        }
 
         return model.findByIdAndDelete(model.base.Types.ObjectId(documentId));
     }
 
-    async saveCollectionDocument (request) {
+    async saveCollectionDocument (request, response) {
         const collectionName = request.params.collection;
         const model = SchemaUI.SchemaUI.getModel(collectionName);
+        const auditLogModel = getAuditLogModel(model.base, model.db);
         const parsedModel = SchemaUI.SchemaUI.routesMap.get(collectionName);
-        const fields = Object.keys(parsedModel.fields);
-        const newItem = request.body;
+        const allowedFields = Object.keys(parsedModel.fields);
+        const existingId = request.body._id;
+        const newItem = new model(request.body);
         let itemToSave = new model({});
+        let auditLog = new auditLogModel({
+            type: AuditTypes.create,
+            collection_name: model.collection.name,
+            document_id: newItem._id,
+            modifiedFields: [],
+            initiator: (response.locals || {}).initiator
+        });
 
-        if (newItem.hasOwnProperty('_id')) {
-            itemToSave = await model.findById(model.base.Types.ObjectId(newItem._id));
+        if (existingId) {
+            itemToSave = await model.findById(model.base.Types.ObjectId(existingId));
 
             if (!itemToSave) {
                 throw new Error(Errors.generalErrors.documentNotFound);
             }
+
+            auditLog.document_id = itemToSave._id;
+            auditLog.type = AuditTypes.edit;
         }
 
-        for (const field of fields) {
-            if (_.has(newItem, field)) {
-                const val = _.get(newItem, field);
+        for (const field of allowedFields) {
+            const oldValue = itemToSave.get(field);
+            const newValue = newItem.get(field);
 
-                _.set(itemToSave, field, val);
+            if (AuditTypes.edit === auditLog.type
+                && String(oldValue) !== String(newValue)) { // TODO: String comparison won't work for embedded document
+                auditLog.modifiedFields.push({
+                    field,
+                    oldValue,
+                    newValue
+                });
             }
+
+            itemToSave.set(field, newValue);
+        }
+
+        if (true === SchemaUI.SchemaUI.options.auditLog) {
+            auditLog.save().catch(error => console.log(`error while trying to save audit log: ${error.message}`));
         }
 
         return itemToSave.save();
@@ -148,7 +184,8 @@ class Api extends BaseRoute {
         for (const field of fields) {
             const fieldObj = parsedModel.fields[field];
             if (true === fieldObj.required && FieldTypes.Boolean === fieldObj.type) {
-                _.set(newModel, field, false);
+                const defaultBooleanValue = Boolean(fieldObj.default) || false;
+                _.set(newModel, field, defaultBooleanValue);
             }
         }
 
