@@ -45,6 +45,18 @@ Intuitive, responsive, generic CRM dashboard, that created to help you manage yo
 ### SchemaUI.init([options])
 `options` (optional) - global options for SchemaUI instance (TBD)
 
+| Property      | Type          | Description
+| :---          | :---          | :---
+| auditLog      | Boolean       | (optional) allow audit_log for create, edit, delete for the registered models. default: true
+
+#### Example
+
+```js
+SchemaUI.init({
+    auditLog: false // disable audit log for all models
+})
+```
+
 ### SchemaUI.registerModel(Model, [options])
 *this method should be called multiple times, for every model that you wish to include in the admin UI*
 
