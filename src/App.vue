@@ -52,7 +52,7 @@
 
     <v-content>
       <template v-if="hasCollections">
-        <v-jsoneditor v-model="json" :options="jsonOptions" :plus="false" height="400px" @error="onError"></v-jsoneditor>
+        <router-view />
       </template>
     </v-content>
   </v-app>

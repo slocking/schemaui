@@ -52,6 +52,13 @@ class MongooseAdapter {
                 nested.push(key);
                 this.treeToFields(field, fields, nested);
 
+            } else if (true === multi && Enum.FieldTypes.Object === typeof field) {
+                fields[key] = {
+                    key,
+                    multi,
+                    type: Enum.FieldTypes.Embedded,
+                    required: false
+                };
             } else if (fieldType) {
                 const targetKey = nestedFields.length ? [...nestedFields, key].join('.') : key;
 

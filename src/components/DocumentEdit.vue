@@ -18,7 +18,24 @@
                         <template v-if="fields[fieldTypes.ObjectId]">
                             <dynamic-field v-for="field of fields[fieldTypes.ObjectId]" :key="field.key" v-model="item[field.key]" :field="field" :disabled="!canEdit" />
                         </template>
-                        <template v-if="fields[fieldTypes.Date]">
+                      <template v-if="fields[fieldTypes.Embedded]">
+                        <div style="margin-bottom: 30px;">
+                          <v-expansion-panels accordion>
+                            <embedded-field
+                                v-for="(field, index) of fields[fieldTypes.Embedded]"
+                                v-model="item[field.key]"
+                                @change="activeEmbeddedPanel = $event"
+                                :active="activeEmbeddedPanel"
+                                :index="index"
+                                :key="field.key"
+                                :field="field"
+                                :errorMessage="'JSON is invalid'"
+                                :required="true"
+                            />
+                          </v-expansion-panels>
+                        </div>
+                      </template>
+                      <template v-if="fields[fieldTypes.Date]">
                             <v-text-field
                                     v-for="(field, index) of fields[fieldTypes.Date]"
                                     v-model="item[field.key]"
@@ -51,9 +68,9 @@
                                 </v-time-picker>
                             </v-dialog>
                         </template>
-                        <template v-if="fields[fieldTypes.Boolean]">
-                            <dynamic-field v-for="field of fields[fieldTypes.Boolean]" :key="field.key" v-model="item[field.key]" :field="field" :disabled="!canEdit" />
-                        </template>
+                      <template v-if="fields[fieldTypes.Boolean]">
+                          <dynamic-field v-for="field of fields[fieldTypes.Boolean]" :key="field.key" v-model="item[field.key]" :field="field" :disabled="!canEdit" />
+                      </template>
                     </v-col>
                 </v-row>
                 <v-card-actions>
@@ -136,6 +153,7 @@
                 fields: {},
                 item: {},
                 dateModal: {},
+                activeEmbeddedPanel: -1
             }
         },
         async mounted () {
