@@ -4,8 +4,12 @@ const BaseRoute                     = require('./base');
 const escapeRegex                   = require('escape-string-regexp');
 const Errors                        = require('../../lib/errors');
 const _                             = require('lodash');
-const { FieldTypes, AuditTypes }    = require('../../lib/enums');
 const { getAuditLogModel }          = require('../../lib/utils')
+const {
+    FieldTypes,
+    AuditTypes,
+    AllowedListFields
+} = require('../../lib/enums');
 
 class Api extends BaseRoute {
     async getConfig () {
@@ -51,7 +55,7 @@ class Api extends BaseRoute {
             let newFields = [];
 
             for (const field of listFields) {
-                if (fieldObj.hasOwnProperty(field) && Object.values(FieldTypes).includes(fieldObj[field].type)) {
+                if (fieldObj.hasOwnProperty(field) && AllowedListFields.includes(fieldObj[field].type)) {
                     projection[field] = 1;
                     newFields.push(field);
                 }
