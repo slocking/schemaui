@@ -2,6 +2,8 @@
     <img src="https://user-images.githubusercontent.com/7160836/98726793-a500d700-239f-11eb-8d32-f85821e0fbbe.png" />
 </p>
 
+Turn every mongoose schema, into a shiny, slick, good looking UI, that will help you manage fully CRUD operations to your registered models.
+
 ---
 
 [![NPM version](https://img.shields.io/npm/v/schemaui.svg)](https://npmjs.org/package/codecov)
@@ -9,7 +11,6 @@
 [![codecov.io](http://codecov.io/github/slocking/schemaui/coverage.svg?branch=master)](http://codecov.io/github/slocking/schemaui?branch=master)
 [![dependencies](https://david-dm.org/slocking/schemaui.svg)](https://david-dm.org/slocking/schemaui.svg)
 
-Turn every mongoose schema, into a shiny, slick, good looking UI, that will help you manage fully CRUD operations to your registered models.
 
 ## Installation
 
