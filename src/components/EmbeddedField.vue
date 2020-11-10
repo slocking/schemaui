@@ -33,7 +33,6 @@
   </v-expansion-panel>
 </template>
 <script>
-    /* eslint-disable */
     import _ from 'lodash';
     import VInput from 'vuetify/lib/components/VInput';
     import { form } from '../mixins/form';

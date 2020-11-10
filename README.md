@@ -1,4 +1,8 @@
-# Schema UI
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/7160836/98673786-892a1080-2360-11eb-9cc0-d7b8ea78a126.png" />
+</p>
+
+---
 
 [![NPM version](https://img.shields.io/npm/v/schemaui.svg)](https://npmjs.org/package/codecov)
 [![Build Status](https://travis-ci.com/slocking/schemaui.svg?branch=master)](https://travis-ci.com/slocking/schemaui)
