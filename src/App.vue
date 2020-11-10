@@ -99,14 +99,7 @@ export default {
     loaded: false,
     drawer: true,
     headless: true,
-    collections: {},
-    jsonOptions: {
-      mode: 'code',
-      mainMenuBar: false
-    },
-    json: {
-      "hello": "vue"
-    }
+    collections: {}
   }),
 };
 </script>

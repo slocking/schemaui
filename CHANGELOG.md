@@ -5,6 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2020-10-15
+
+### Added
+
+- support edit of embedded documents (array of objects/Schemas)
+- add tests
+- improve README.md
+
 ## [1.2.0] - 2020-10-15
 
 ### Added
@@ -59,6 +67,7 @@ Initial Version
 
 
 [unreleased]: https://github.com/slocking/schemaui/compare/master...dev
+[1.3.0]: https://github.com/slocking/schemaui/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/slocking/schemaui/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/slocking/schemaui/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/slocking/schemaui/compare/v1.0.5...v1.1.0
