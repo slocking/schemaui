@@ -175,11 +175,14 @@
                         return { value: field, text: prettyField };
                     });
 
+
                     // open single item if it's a single objectId (recently added / searched)
+                    this.expanded = [];
+
                     if (true === /^[0-9a-z]{24}$/.test(this.search) && 1 === this.items.length && this.search === this.items[0]._id) {
+                      this.$nextTick(() => {
                         this.expanded = this.items;
-                    } else {
-                        this.expanded = [];
+                      });
                     }
                 } catch (error) {
                     if (error instanceof DOMException) { // Aborted

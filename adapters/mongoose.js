@@ -40,6 +40,10 @@ class MongooseAdapter {
                 field = tree[key]
             }
 
+            if (Enum.FieldTypes.Object === typeof field && 'Schema' === field.constructor.name) {
+                field = field.tree;
+            }
+
             if (Array.isArray(field)) {
                 field = field[0];
                 multi = true;
@@ -52,6 +56,15 @@ class MongooseAdapter {
                 nested.push(key);
                 this.treeToFields(field, fields, nested);
 
+            } else if (true === multi && Enum.FieldTypes.Object === typeof field) {
+                const targetKey = nestedFields.length ? [...nestedFields, key].join('.') : key;
+
+                fields[key] = {
+                    key: targetKey,
+                    multi,
+                    type: Enum.FieldTypes.Embedded,
+                    required: false
+                };
             } else if (fieldType) {
                 const targetKey = nestedFields.length ? [...nestedFields, key].join('.') : key;
 

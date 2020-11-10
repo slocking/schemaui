@@ -88,14 +88,18 @@ export default {
   },
 
   methods: {
-    ...mapActions(['updateGlobal', 'toggleDark'])
+    ...mapActions(['updateGlobal', 'toggleDark']),
+    onError (e) {
+      // eslint-disable-next-line no-console
+      console.log(e)
+    }
   },
 
   data: () => ({
     loaded: false,
     drawer: true,
     headless: true,
-    collections: {},
+    collections: {}
   }),
 };
 </script>

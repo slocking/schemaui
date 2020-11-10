@@ -1,10 +1,16 @@
-# Schema UI
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/7160836/98726793-a500d700-239f-11eb-8d32-f85821e0fbbe.png" />
+</p>
+
+Turn every mongoose schema, into a shiny, slick, good looking UI, that will help you manage fully CRUD operations to your registered models.
+
+---
 
 [![NPM version](https://img.shields.io/npm/v/schemaui.svg)](https://npmjs.org/package/codecov)
 [![Build Status](https://travis-ci.com/slocking/schemaui.svg?branch=master)](https://travis-ci.com/slocking/schemaui)
 [![codecov.io](http://codecov.io/github/slocking/schemaui/coverage.svg?branch=master)](http://codecov.io/github/slocking/schemaui?branch=master)
+[![dependencies](https://david-dm.org/slocking/schemaui.svg)](https://david-dm.org/slocking/schemaui.svg)
 
-Turn every mongoose schema, into a shiny, slick, good looking UI, that will help you manage fully CRUD operations to your registered models.
 
 ## Installation
 
@@ -44,6 +50,18 @@ Intuitive, responsive, generic CRM dashboard, that created to help you manage yo
 
 ### SchemaUI.init([options])
 `options` (optional) - global options for SchemaUI instance (TBD)
+
+| Property      | Type          | Description
+| :---          | :---          | :---
+| auditLog      | Boolean       | (optional) allow audit_log for create, edit, delete for the registered models. default: true
+
+#### Example
+
+```js
+SchemaUI.init({
+    auditLog: false // disable audit log for all models
+})
+```
 
 ### SchemaUI.registerModel(Model, [options])
 *this method should be called multiple times, for every model that you wish to include in the admin UI*
