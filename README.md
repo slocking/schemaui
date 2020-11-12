@@ -40,6 +40,10 @@ SchemaUI.registerModel(YOUR_MODEL);
 app.use('/schemaui', SchemaUI.middleware());
 ```
 
+5. Visit your new dashboard! go to: http://YOUR-URL/schemaui
+
+> At the moment it's not possible to change the `schemaui` path, we're working on making it dynamic.
+
 ## The result
 
 Intuitive, responsive, generic CRM dashboard, that created to help you manage your models
