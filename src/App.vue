@@ -23,9 +23,9 @@
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" app clipped v-if="!headless">
-      <v-list rounded>
+      <v-list shaped>
         <v-subheader>COLLECTIONS</v-subheader>
-        <v-list-item-group active-class="active">
+        <v-list-item-group color="primary" active-class="active">
           <v-list-item link
                        v-for="collection of collections"
                        :key="collection.name"
@@ -35,7 +35,7 @@
               <v-icon>mdi-chevron-right</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title class="grey--text">
+              <v-list-item-title>
                 {{ _.startCase(collection.name) }}
               </v-list-item-title>
             </v-list-item-content>
