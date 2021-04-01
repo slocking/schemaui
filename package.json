@@ -12,7 +12,8 @@
     "schema",
     "nodejs",
     "ui",
-    "administration"
+    "administration",
+    "management"
   ],
   "homepage": "https://github.com/slocking/schemaui",
   "bugs": "https://github.com/slocking/schemaui/issues",

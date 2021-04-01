@@ -11,10 +11,6 @@ class SchemaUI {
         return this.router;
     }
 
-    getDbAdapter () {
-        return new (this.options.adapter || MongooseAdapter)();
-    }
-
     registerModel (newModel, options = {}) {
         const model = this.adapter.parseNewModel(newModel, options);
         model.options = this.adapter.addOptionsToModel(model, options);
@@ -46,10 +42,6 @@ class SchemaUI {
             auditLog: true,
             ...customOptions
         }
-    }
-
-    getRoutes () {
-        return this.routesMap;
     }
 
     initRoutes () {

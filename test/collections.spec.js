@@ -178,6 +178,16 @@ describe('SchemaUI App', () => {
             expect(request.body).to.have.property('success').to.equal(false);
             expect(request.body).to.have.property('data').to.equal(Errors.generalErrors.documentNotFound);
         });
+
+        it('should fail with non existing collection', async () => {
+            const newUser = User.newUser().toObject();
+            const request = await chai.request(app).post(BASE_PATH + '/api/collections/NotExisting/save')
+                .set('Content-Type', defaultHeaders['Content-Type'])
+                .send(newUser);
+            expect(request).to.have.status(200);
+            expect(request.body).to.have.property('success').to.equal(false);
+            expect(request.body).to.have.property('data').to.equal(Errors.generalErrors.collectionNotFound);
+        });
     });
 
     describe('POST /api/collections/:collectionName', async () => {
