@@ -20,6 +20,12 @@ ApiRoutes.post(
     ApiController.getCollectionDocuments
 );
 
+ApiRoutes.get(
+    '/collections/:collection/logs',
+    Middlewares.hasPermissions([Permissions.Read]),
+    ApiController.getCollectionLogs
+);
+
 ApiRoutes.delete(
     '/collections/:collectionName/:documentId',
     Middlewares.hasPermissions([Permissions.Delete]),

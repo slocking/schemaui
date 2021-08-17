@@ -101,6 +101,39 @@ class Api extends BaseRoute {
         };
     }
 
+    async getCollectionLogs (request) {
+        if (true !== SchemaUI.SchemaUI.options.auditLog) {
+            throw new Error(Errors.generalErrors.auditLogDisabled)
+        }
+
+        const { collection } = request.params;
+        const { page = '1' } = request.query;
+
+        const itemsPerPage = 10;
+        const skip = (+page - 1) * itemsPerPage;
+
+        const model = SchemaUI.SchemaUI.getModel(collection);
+        const auditLogModel = getAuditLogModel(model.base, model.db);
+        const query = { collection_name: model.collection.name };
+        const projection = {
+            type: 1,
+            document_id: 1,
+            date: 1,
+        };
+
+        const [items, totalItems] = await Promise.all([
+            auditLogModel.find(query, projection)
+                .sort({ _id: -1 }).skip(skip).limit(itemsPerPage),
+            auditLogModel.countDocuments(query)
+        ]);
+
+        return {
+            items,
+            totalPages: Math.ceil(totalItems / itemsPerPage)
+        }
+    }
+
+
     removeCollectionDocument (request, response) {
         const { collectionName, documentId } = request.params;
         const model = SchemaUI.SchemaUI.getModel(collectionName);
