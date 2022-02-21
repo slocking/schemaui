@@ -37,6 +37,8 @@
     "express": "~4.17",
     "lodash": "~4.17",
     "moment": "~2.29",
+    "mysql2": "~2.3",
+    "sequelize": "^6.12.0-alpha.1",
     "v-jsoneditor": "~1.4",
     "vuex": "~3.1"
   },
